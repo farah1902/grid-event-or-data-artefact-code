@@ -1,0 +1,4 @@
+residual,all,level g (n=9),level u (n=40),level v (n=157)
+forecast,0.714,0.444,0.55,0.771
+nowcast,0.694,0.444,0.45,0.771
+STL,0.621,0.444,0.325,0.707
