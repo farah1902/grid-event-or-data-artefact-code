@@ -1,0 +1,16 @@
+{
+ "beta_star": {
+  "1%": 0.7,
+  "3%": 0.6,
+  "7%": 0.6
+ },
+ "events": "test period, detected, true type in the seven typed classes (Table 6)",
+ "labellers": {
+  "label model q": "label model q",
+  "end model f": "end model f, all features",
+  "fusion p": "fusion (\u03b2*, D50 abstention)"
+ },
+ "nll_clip": 1e-06,
+ "table6_ece_reproduced": true,
+ "a1_3pct_fused_g1": "44 of 160 (Section 6.5) reproduced"
+}

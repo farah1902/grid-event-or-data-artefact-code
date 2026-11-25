@@ -294,7 +294,7 @@ def e22_tetouan(fig_dir):
 
 
 # ---------------------------------------------------------------- Fig 12
-SC12 = {"S0": "#9AA0A6", "S1": "#F2A541", "S2": "#C8553D", "S3": "#2F6690"}
+SC12 = {"S0": "#9AA0A6", "S1": "#F2A541", "S1b": "#7B5EA7", "S2": "#C8553D", "S3": "#2F6690"}
 
 
 def fig12_downstream(fig_dir, paper_name=None):
@@ -310,21 +310,31 @@ def fig12_downstream(fig_dir, paper_name=None):
     t8 = pd.read_csv(RES / "downstream_v1" / "table8_forecasting.csv")
     fa = pd.read_csv(RES / "downstream_v1" / "forecast_all" / "forecast_summary.csv")
     per = pd.read_csv(RES / "downstream_v1" / "outage_all" / "outage_per_dataset.csv")
+    # S1b, the control of D111 (S2's imputer on every flagged run, no indicator): tools/s1b_control.py
+    s1b_real = pd.read_csv(RES / "downstream_v1" / "s1b_control" / "real_forecast.csv")
+    s1b_inj = pd.read_csv(RES / "downstream_v1" / "s1b_control" / "forecast_summary.csv")
+    order = ["S0", "S1", "S1b", "S2", "S3"]
     fig, axs = plt.subplots(1, 3, figsize=(7.2, 2.6) if P else (15, 4.4), gridspec_kw=dict(width_ratios=[1, 1, 1.25]))
     for k, (ax, data) in enumerate(zip(axs[:2], ("real", "injected"))):
         if data == "real":
             g = t8[(t8.data == data) & (t8.subset == "after anomaly (2 days)") & (t8.model == "LightGBM")]
-            g = g.pivot_table(index="horizon", columns="strategy", values="MASE").reindex(["1 h", "1 day"])
+            g = g.pivot_table(index="horizon", columns="strategy", values="MASE")
+            b = s1b_real[(s1b_real.strategy == "S1b") & (s1b_real.subset == "after anomaly (2 days)") & (s1b_real.model == "LightGBM")]
+            g["S1b"] = b.set_index("horizon").MASE
+            g = g[[c for c in order if c in g]].reindex(["1 h", "1 day"])
             title = "(a) real data" if P else "(a) real data, test steps after an anomaly (2 days)"
         else:
             g = fa[(fa.rate == "all") & (fa.subset == "after anomaly (2 days)") & (fa.model == "LightGBM")].set_index("horizon")
-            g = g[[f"MASE_{s}_mean" for s in ("S0", "S1", "S2", "S3")]].rename(columns=lambda c: c[5:7]).reindex(["1 h", "1 day"])
+            g = g[[f"MASE_{s}_mean" for s in ("S0", "S1", "S2", "S3")]].rename(columns=lambda c: c[5:7])
+            b = s1b_inj[(s1b_inj.rate == "all") & (s1b_inj.subset == "after anomaly (2 days)") & (s1b_inj.model == "LightGBM")]
+            g["S1b"] = b.set_index("horizon").MASE_S1b_mean
+            g = g[order].reindex(["1 h", "1 day"])
             title = "(b) injected data (30 datasets)" if P else "(b) injected data (mean of 30 datasets), steps after an anomaly"
-        g.plot.bar(ax=ax, color=[SC12[c] for c in g.columns], rot=0, width=0.8, edgecolor="white", linewidth=0.6 if P else 1)
+        g.plot.bar(ax=ax, color=[SC12[c] for c in g.columns], rot=0, width=0.85, edgecolor="white", linewidth=0.6 if P else 1)
         ax.set_ylabel("MASE (LightGBM)" if (k == 0 or not P) else "", fontsize=F["label"]); ax.set_xlabel("")
         ax.set_title(title, fontsize=F["title"]); ax.tick_params(labelsize=F["tick"])
         ax.set_ylim(0, g.max().max() * (1.22 if P else 1.12))
-        ax.legend(fontsize=F["legend"], ncol=4, loc="upper left", handlelength=1, columnspacing=0.8, frameon=False)
+        ax.legend(fontsize=F["legend"], ncol=5, loc="upper left", handlelength=1, columnspacing=0.6, handletextpad=0.3, frameon=False)
         if not P:
             for cont in ax.containers:
                 ax.bar_label(cont, fmt="%.2f", fontsize=F["bar"], padding=1)

@@ -1,0 +1,25 @@
+{
+ "datasets": 30,
+ "rates": [
+  0.01,
+  0.03,
+  0.07
+ ],
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "seed_forecaster": 0,
+ "s2_reproduced_real_max_abs_diff_mase": 1.1102230246251563e-16,
+ "s2_reproduced_injected_max_abs_diff_mase": 6.685268516548604e-08,
+ "strategies": "S0, S1, S3 read from results/downstream_v1 (NB5, forecast_all); S1b and S2 forecast here",
+ "minutes_this_call": 0.6
+}

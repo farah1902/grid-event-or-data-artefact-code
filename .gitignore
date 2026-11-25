@@ -10,3 +10,4 @@ desktop.ini
 # large files re-created by the notebooks
 results/benchmark_v1/models/*.pkl
 results/downstream_v1/loss_real.pkl
+results/downstream_v1/s1b_control/loss_real_s1b.pkl

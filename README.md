@@ -24,7 +24,7 @@ probability and without labelled data:
 | `data/external/natural_earth/` | Natural Earth 1:50m land (public domain), for the map figure |
 | `src/` | the method: rule engines (`rules_v0.py`, `rules_v1.py`), label model, detector, TCN-GAT predictor, end model and fusion, injection benchmark, downstream test, transfer test, GDN and USAD baselines, figure and table modules |
 | `notebooks/` | NB1–NB7, executed, with their outputs |
-| `tools/` | scripts that produce the results not made by the notebooks (development selection, ablations, deep baselines, outage and forecasting tests on the 30 test datasets, Snorkel baseline, paired tests) and the generators of the notebooks (`make_nb*.py`) |
+| `tools/` | scripts that produce the results not made by the notebooks (development selection, ablations, deep baselines, outage and forecasting tests on the 30 test datasets, Snorkel baseline, paired tests, robustness and calibration checks, the cleaning control S1b) and the generators of the notebooks (`make_nb*.py`) |
 | `results/` | every output, from rule items and labels to the benchmark runs, the downstream and transfer results, the released catalogue and the paper's tables and figures |
 
 ## The typed catalogue
@@ -80,6 +80,9 @@ python tools/attribution_wilcoxon.py     # paired tests of the attribution table
 python tools/outage_all_datasets.py      # outage statistics on the 30 test datasets, ~1 h
 python tools/forecast_all_datasets.py    # forecasting on the 30 test datasets, ~2.5 h
 python tools/marrakech_beta_sensitivity.py
+python tools/review_robustness.py        # real-data DM tests with longer bandwidths and block bootstraps; the A1 items (~1 min)
+python tools/calibration_by_class.py     # calibration of the attribution per class (seconds)
+python tools/s1b_control.py              # cleaning control S1b on the real data and the 30 test datasets, ~70 min; resumable
 # NB7 (final catalogue, figures and tables, ~2 min)
 ```
 
@@ -87,6 +90,8 @@ Notes:
 
 - NB7 needs the LightGBM predictors saved by NB4 (`results/benchmark_v1/models/lightgbm_models.pkl`). The file is not
   included because of its size; re-running NB4 creates it.
+- `tools/review_robustness.py` and `tools/s1b_control.py` read NB5's per-step losses
+  (`results/downstream_v1/loss_real.pkl`), also left out because of its size; executing NB5 creates it.
 - The Snorkel baseline (`tools/snorkel_baseline.py`) runs in a separate environment with `snorkel==0.10.0`; the
   commands are in its docstring.
 - Notebooks resolve the repository root by themselves and also run on Google Colab from a copy of the repository on

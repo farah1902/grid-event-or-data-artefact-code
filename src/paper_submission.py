@@ -109,6 +109,10 @@ def figure_6(res, out):
     S = D.level_scores(P, P["rho"] - D.apply_rho_models(P, lgb["forecast"], "forecast"), bands_used=["raw"])["raw"]
     cases = [("(a) 25–30 January 2023: holds, then a 15-zone zero fill", "2023-01-25 12:00", "2023-01-30 00:00", ["L1", "B1", "F4"]),
              ("(b) 29 October – 4 November 2022: feeder outage on F4", "2022-10-29 06:00", "2022-11-04 00:00", ["F4", "F1", "L1"])]
+    # one colour per entity in both panels (D110, review F3): each city its colour in the city row, each zone the colour
+    # of its city; F1, a second Foum El Oued zone, gets its own colour
+    city_col = {"Laayoune": "#2F6690", "Boujdour": "#3A7D44", "Foum eloued": "#C8553D"}
+    zone_col = {"L1": city_col["Laayoune"], "B1": city_col["Boujdour"], "F4": city_col["Foum eloued"], "F1": "#7B5EA7"}
     check = {}
     with plt.rc_context(STYLE):
         fig, axs = plt.subplots(3, 2, figsize=(W, 4.6), sharex="col")
@@ -116,10 +120,10 @@ def figure_6(res, out):
             axs[0, col].plot(S["g"][a:b], color="#0B2545", lw=.8, label="region g")
             axs[0, col].set_title(title)
             check[title] = round(float(S["g"][a:b].max()), 1)
-            for c, colr in zip(["Laayoune", "Boujdour", "Foum eloued"], ["#2F6690", "#3A7D44", "#C8553D"]):
+            for c, colr in city_col.items():
                 axs[1, col].plot(S["u"][c][a:b], color=colr, lw=.8, label=f"city u, {R1.CITY_SHORT[c]}")
-            for z, colr in zip(zs, ["#C8553D", "#2F6690", "#3A7D44"]):
-                axs[2, col].plot(S["v"][z][a:b], color=colr, lw=.8, label=f"zone v, {z}")
+            for z in zs:
+                axs[2, col].plot(S["v"][z][a:b], color=zone_col[z], lw=.8, label=f"zone v, {z}")
             axs[2, col].xaxis.set_major_locator(mdates.DayLocator())
             axs[2, col].xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
             for r_, lab in enumerate(["region g", "city u", "zone v"]):
@@ -129,8 +133,8 @@ def figure_6(res, out):
                 ax.legend(loc="upper right", ncol=3, handlelength=1.2, columnspacing=0.8)
                 if col == 0:
                     ax.set_ylabel(f"{lab}\n(robust z)")
-                for st in ["dead", "hold", "interp"]:
-                    m = P["states"][st][zs[0]][a:b]
+                for st in ["dead", "hold", "interp"]:            # states of any of the zones shown (D110, review F3)
+                    m = P["states"][st][zs][a:b].any(axis=1)
                     ax.fill_between(m.index, 0, 1, where=m.to_numpy(), step="post", color=COL["zero" if st == "dead" else st],
                                     alpha=.15, lw=0, transform=ax.get_xaxis_transform())
         fig.tight_layout(h_pad=0.4, w_pad=1.0)

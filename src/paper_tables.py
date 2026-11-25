@@ -86,7 +86,10 @@ def table1_inventory(res, tet_data):
 def table3_rules():
     rs = pd.read_csv(RES / "catalogue_v1" / "rule_summary.csv")
     rp = pd.read_csv(RES / "labels_v1" / "rule_params.csv")
-    agg = rp.groupby("rule").agg(outputs=("output", lambda s: ", ".join(s)), learned_precision=("learned_precision", "max"),
+    # speaks_for: the types each output's vote counts for in the label model (D31: G -> every grid event, R9 -> G3 and G4);
+    # learned_precision is the posterior mass on these types (D110, review point on R9)
+    agg = rp.groupby("rule").agg(outputs=("output", lambda s: ", ".join(s)), speaks_for=("speaks_for", lambda s: ", ".join(s)),
+                                 learned_precision=("learned_precision", "max"),
                                  log_odds_a_over_b=("log_odds_a_over_b", "max"), defining=("defining", "max")).reset_index()
     out = rs[["rule", "family", "item_kind", "n_votes", "coverage", "overlap", "conflict"]].merge(agg, on="rule", how="left")
     order = {r: i for i, r in enumerate(["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "R10", "R11", "R12", "R13", "R14", "R15", "R16", "R19", "R20", "R21"])}

@@ -1,0 +1,9 @@
+model,horizon,subset,comparison,n,sig_better,sig_worse,DM_mean
+LightGBM,1 day,after anomaly (2 days),S1b vs S2,30,0,3,-0.7008525769412155
+LightGBM,1 day,all,S1b vs S2,30,2,5,-0.5939502331455788
+LightGBM,1 h,after anomaly (2 days),S1b vs S2,30,1,16,-1.8865658112941313
+LightGBM,1 h,all,S1b vs S2,30,2,22,-3.1024480816458353
+naive,1 day,after anomaly (2 days),S1b vs S2,30,0,25,-3.2501044496124774
+naive,1 day,all,S1b vs S2,30,0,25,-3.201313739300367
+naive,1 h,after anomaly (2 days),S1b vs S2,30,0,14,-2.1187740456377884
+naive,1 h,all,S1b vs S2,30,0,14,-2.1180252602761858

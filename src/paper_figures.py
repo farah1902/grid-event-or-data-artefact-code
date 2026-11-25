@@ -241,13 +241,14 @@ TYPOLOGY = [
     ("A4", "clock error", "artefact", "system, one day",
      "daily profile shifted by δ* ≈ ±60 min after a clock-change date; duplicated or missing stamps", "R13, R14, R15"),
     ("G1", "regional outage", "grid event", "region (≥ 2 cities)",
-     "noise floor (η < 0.9) in ≥ 2 cities; hypothesised: ramp restoration with cold-load overshoot π ≥ 1.15", "R5, R6, R7"),
+     "noise floor (η < 0.9) in ≥ 2 cities; hypothesised: ramp restoration with cold-load overshoot π ≥ 1.15", "R7 (+ R5, R6)"),
     ("G2", "city outage", "grid event", "city",
      "all zones of one city at the noise floor, the other cities normal", "R8 (+ R5, R6)"),
+    # (+ ...): rules whose vote covers a set of types (D31: R5, R6 every grid event; R9 G3 and G4) - D110, review point on R9
     ("G3", "unplanned feeder outage", "grid event", "zone",
-     "one zone at the noise floor at any hour, possibly > 24 h; hypothesised: ramp restoration", "R9, R11 (+ R6)"),
+     "one zone at the noise floor at any hour, possibly > 24 h; hypothesised: ramp restoration", "R11 (+ R5, R6, R9)"),
     ("G4", "planned work", "grid event", "zone",
-     "one zone at the noise floor, starting 06:00–11:59, short (< 6 h)", "R10"),
+     "one zone at the noise floor, starting 06:00–11:59, short (< 6 h)", "R10 (+ R5, R6, R9)"),
     ("G5", "load transfer", "grid event", "≥ 2 zones of a city",
      "one zone steps down while another steps up by the same amount (conservation κ ≈ 0)", "R16"),
 ]

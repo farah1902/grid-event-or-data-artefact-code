@@ -1,0 +1,19 @@
+{
+ "bootstrap_resamples": 20000,
+ "bootstrap_seed": 0,
+ "blocks": "stretch: maximal runs of consecutive scored 10-min steps; day: calendar days; week: 7-day blocks from the first scored day",
+ "p_definition": "two-sided: 2 min(P(mean <= 0), P(mean >= 0)) over the resamples; 0 means below 2/B",
+ "dm_reproduced": true,
+ "outage_real": {
+  "naive_zone_hours": 1220.5,
+  "typed_zone_hours": 294.0,
+  "ratio_naive_to_typed": 4.151360544217687,
+  "a1_zone_hours": 926.5,
+  "a1_share_of_naive": 0.7591151167554281,
+  "naive_minus_typed_equals_a1": true,
+  "dead_items": 78,
+  "expected_typed_zone_hours": 306.320160105307,
+  "expected_ratio_naive_to_typed": 3.9843933209633193,
+  "ratio_without_the_three_a1": 1.0
+ }
+}

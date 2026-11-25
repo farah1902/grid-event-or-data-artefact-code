@@ -10,6 +10,8 @@ qualifying zone run):
                that the forecaster sees, and excluded from the training loss. Items labelled N, clock items and
                detector-only candidates are left as recorded. A4 is not re-aligned: timestamps stay as recorded (D11).
   S3 oracle  - S2 with the true types (injected data only).
+  S1b control - S2's imputer on every flagged run, outages included, no event indicator (D111): isolates the imputer
+               (S1 vs S1b) from the typing (S1b vs S2).
 
 Forecasters: a global LightGBM direct forecaster per horizon (1 h = 6 steps, 1 day = 144 steps) on the zone-scaled
 series, and a model-free reference on the same cleaned series (persistence at 1 h, seasonal naive at 1 day). Rolling origin: every step is an origin. Scoring (guide): target steps in 1 Jan - 24 May 2024 that every
@@ -100,7 +102,11 @@ def clean(P, flagged, art, grid, xh, strategy):
     if strategy == "S1":
         y = x.mask(flagged)
         return y.interpolate(limit_area="inside").ffill().bfill(), ind
-    # S2 / S3: impute artefacts with x_hat scaled to join both edges; keep grid events, flag them
+    if strategy == "S1b":
+        # control (D111, external review C1): S2's imputer on every flagged run, outages included, and no event
+        # indicator, so that S1 vs S1b measures the imputer and S1b vs S2 the typing (kept and flagged grid events)
+        art, grid = flagged, ind
+    # S2 / S3 (and S1b): impute artefacts with x_hat scaled to join both edges; keep grid events, flag them
     ok_all = ~(flagged | x.isna())
     for z in x.columns:
         a_m = art[z].to_numpy()
